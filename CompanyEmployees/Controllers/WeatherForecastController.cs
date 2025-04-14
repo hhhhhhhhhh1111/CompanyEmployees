@@ -24,7 +24,7 @@ namespace CompanyEmployees.Controllers
             _logger.LogWarn("¬от сообщение предупреждени€ от нашего контроллера значений.");
             _logger.LogError("¬от сообщение об ошибке от нашего контроллера значений.");
 
-            _repository.Company.AnyMethodFromCompanyRepository();
+  //          _repository.Company.AnyMethodFromCompanyRepository();
             _repository.Employee.AnyMethodFromEmployeeRepository();
 
             return new string[] { "value1", "value2" };

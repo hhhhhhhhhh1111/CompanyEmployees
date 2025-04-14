@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Entities.Configuration
 {
     public class CompanyConfiguration : IEntityTypeConfiguration<Company>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using CompanyEmployees.Extensions;
+using Contracts;
 
 namespace CompanyEmployees;
 
@@ -25,9 +26,11 @@ public class Startup
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+        services.AddAutoMapper(typeof(Startup));
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
     {
         if (env.IsDevelopment())
         {
@@ -38,6 +41,8 @@ public class Startup
         else
         {
         }
+
+        app.ConfigureExceptionHandler(logger);
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseCors("CorsPolicy");
