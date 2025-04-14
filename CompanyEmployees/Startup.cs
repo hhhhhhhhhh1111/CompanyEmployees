@@ -23,8 +23,13 @@ public class Startup
         services.ConfigureLoggerService();
         services.ConfigureSqlContext(Configuration);
         services.ConfigureRepositoryManager();
-        services.AddControllers();
-        services.AddEndpointsApiExplorer();
+        services.AddControllers(config =>
+        {
+            config.RespectBrowserAcceptHeader = true;
+            config.ReturnHttpNotAcceptable = true;
+        }).AddXmlDataContractSerializerFormatters()
+     .AddCustomCSVFormatter();
+
         services.AddSwaggerGen();
         services.AddAutoMapper(typeof(Startup));
     }
