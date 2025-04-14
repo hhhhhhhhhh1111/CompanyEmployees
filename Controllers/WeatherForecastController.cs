@@ -1,10 +1,11 @@
 using Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CompanyEmployees.Controllers
+
+namespace WebApplication1.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private readonly ILoggerManager _logger;

@@ -1,6 +1,5 @@
-using NLog;
 
-namespace CompanyEmployees;
+namespace ShopApi;
 
 public class Program
 {

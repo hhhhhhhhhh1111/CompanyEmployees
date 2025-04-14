@@ -1,14 +1,17 @@
+using CompanyEmployees;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
-using CompanyEmployees.Extensions;
+//using NLog;
+//using ShopApi.Extensions;
 
-namespace CompanyEmployees;
+namespace ShopApi;
 
 public class Startup
 {
     public Startup(IConfiguration configuration)
     {
-        LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+        LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
+    "/nlog.config"));
         Configuration = configuration;
     }
 
@@ -17,14 +20,15 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-        services.ConfigureCors();
-        services.ConfigureIISIntegration();
-        services.ConfigureLoggerService();
-        services.ConfigureSqlContext(Configuration);
+        //services.ConfigureCors();
+        //services.ConfigureIISIntegration();
+        //services.ConfigureLoggerService();
         services.ConfigureRepositoryManager();
         services.AddControllers();
         services.AddEndpointsApiExplorer();
+        services.ConfigureLoggerService();
         services.AddSwaggerGen();
+        services.ConfigureSqlContext(Configuration);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,9 +40,7 @@ public class Startup
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-        else
-        {
-        }
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseCors("CorsPolicy");
