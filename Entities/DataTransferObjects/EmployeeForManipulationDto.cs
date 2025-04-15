@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entities.DataTransferObjects
 {
-    public class EmployeeForUpdateDto : EmployeeForManipulationDto
+    public abstract class EmployeeForManipulationDto
     {
         [Required(ErrorMessage = "Employee name is a required field.")]
         [MaxLength(30, ErrorMessage = "Maximum length for the Name is 30 characters.")]

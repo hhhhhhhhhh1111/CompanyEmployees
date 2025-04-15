@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using CompanyEmployees.Extensions;
 using Contracts;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyEmployees;
 
@@ -25,6 +26,10 @@ public class Startup
         services.ConfigureRepositoryManager();
         services.AddSwaggerGen();
         services.AddAutoMapper(typeof(Startup));
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+        });
         services.AddControllers(config =>
         {
             config.RespectBrowserAcceptHeader = true;

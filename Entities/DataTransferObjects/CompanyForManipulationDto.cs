@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Entities.DataTransferObjects
 {
-    public class CompanyForCreationDto : CompanyForManipulationDto
+    public abstract class CompanyForManipulationDto
     {
+
         [Required(ErrorMessage = "Company name is a required field.")]
         [MaxLength(60, ErrorMessage = "Maximum length for the Name is 60 characters.")]
         public string Name { get; set; }
@@ -18,6 +19,5 @@ namespace Entities.DataTransferObjects
         [Required(ErrorMessage = "Company country is a required field.")]
         [MaxLength(60, ErrorMessage = "Maximum length for rhe Country is 60 characters.")]
         public string Country { get; set; }
-        public IEnumerable<EmployeeForCreationDto> Employees { get; set; }
     }
 }
