@@ -25,9 +25,18 @@ namespace CompanyEmployees.Controllers
             _userManager = userManager;
             _authManager = authManager;
         }
-
+        /// <summary>
+        /// Регистрация нового пользователя
+        /// </summary>
+        /// <param name="userForRegistration"></param>.
+        /// <returns>Результат регистрации</returns>.
+        /// <response code="201">Пользователь успешно зарегистрирован</response>.
+        /// <response code="400">Пользователь уже существует</response>..
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
             var user = _mapper.Map<User>(userForRegistration);
@@ -43,9 +52,20 @@ namespace CompanyEmployees.Controllers
             await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
             return StatusCode(201);
         }
-
+        /// <summary>
+        /// Аутентификация пользователя и возвращает JWT токен
+        /// </summary>
+        /// <param name="user"></param>.
+        /// <returns>JWT токен для авторизации</returns>.
+        /// <response code="400">Некорректные входные данные</response>.
+        /// <response code="401">Неверное имя пользователя или пароль</response>.
+        /// <response code="422">Ошибка валидации модели</response>.
         [HttpPost("login")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(422)]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto user)
         {
             if (!await _authManager.ValidateUser(user))

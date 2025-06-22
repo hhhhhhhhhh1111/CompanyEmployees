@@ -26,9 +26,19 @@ namespace CompanyEmployees.Controllers
             _mapper = mapper;
             _dataShaper = dataShaper;
         }
-
+        /// <summary>
+        /// Возвращает список сотрудников для указанной компании с поддержкой фильтрации, сортировки и пагинации
+        /// </summary>
+        /// <param name="companyId"></param>.
+        /// <param name="employeeParameters">/param>.
+        /// <returns>Список сотрудников</returns>.
+        /// <response code="400">Если максимальный возраст меньше минимального</response>.
+        /// <response code="404"> Если компания не найдена </response>.
         [HttpGet]
         [HttpHead]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> GetEmployeesForCompany(Guid companyId, [FromQuery] EmployeeParameters employeeParameters)
         {
             if (!employeeParameters.ValidAgeRange)
@@ -44,8 +54,16 @@ namespace CompanyEmployees.Controllers
             var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesFromDb);
             return Ok(_dataShaper.ShapeData(employeesDto, employeeParameters.Fields));
         }
-
+        /// <summary>
+        /// Возвращает сотрудника по ID по компании
+        /// </summary>
+        /// <param name="companyId"></param>.
+        /// <param name="id"></param>.
+        /// <returns>Сотрудник с указанным ID</returns>.
+        /// <response code="404">Если компания или сотрудник не найдены</response>.
         [HttpGet("{id}", Name = "GetEmployeeForCompany")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task <IActionResult> GetEmployeeForCompany(Guid companyId, Guid id)
         {
             var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
@@ -63,9 +81,20 @@ namespace CompanyEmployees.Controllers
             var employee = _mapper.Map<EmployeeDto>(employeeDb);
             return Ok(employee);
         }
-
+        /// <summary>
+        /// Создание сотрудника компании
+        /// </summary>
+        /// <param name="companyId"></param>.
+        /// <param name="employee"></param>.
+        /// <returns>Созданный сотрудник</returns>.
+        /// <response code="201">Возвращает созданного сотрудника</response>.
+        /// <response code="400">Если возраст меньше 18</response>.
+        /// <response code="404">Если компания не найдена</response>.
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task <IActionResult> CreateEmployeeForCompany(Guid companyId, [FromBody] EmployeeForCreationDto employee)
         {
             if (employee.Age < 18)
@@ -88,9 +117,18 @@ namespace CompanyEmployees.Controllers
                 id = employeeToReturn.Id
             }, employeeToReturn);
         }
-
+        /// <summary>
+        /// Удаление сотрудника компании
+        /// </summary>
+        /// <param name="companyId"></param>.
+        /// <param name="id"></param>.
+        /// <returns>Пустой массив данных</returns>.
+        /// <response code="204">Сотрудник удален</response>.
+        /// <response code="404">Если сотрудник не найден</response>.
         [HttpDelete("{id}")]
         [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteEmployeeForCompany(Guid companyId, Guid id)
         {
             var employeeForCompany = HttpContext.Items["employee"] as Employee;
@@ -98,10 +136,20 @@ namespace CompanyEmployees.Controllers
             await _repository.SaveAsync();
             return NoContent();
         }
-
+        /// <summary>
+        /// Обновление данных сотрудника для компании
+        /// </summary>
+        /// <param name="companyId"></param>.
+        /// <param name="id"></param>.
+        /// <param name="employee"></param>.
+        /// <returns>Пустой массив данных</returns>.
+        /// <response code="204">Данные сотрудника успешно обновлены</response>.
+        /// <response code="404">Если данные о конпании или сотруднике не найдены</response>param>.
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateEmployeeForCompany(Guid companyId, Guid id, [FromBody] EmployeeForUpdateDto employee)
         {
             var employeeEntity = HttpContext.Items["employee"] as Employee;
@@ -109,9 +157,21 @@ namespace CompanyEmployees.Controllers
             await _repository.SaveAsync();
             return NoContent();
         }
-
+        /// <summary>
+        /// Частичное обновление данных сотрудника в указанной компании
+        /// </summary>
+        /// <param name="companyId"></param>.
+        /// <param name="id"></param>.
+        /// <param name="patchDoc"></param>.
+        /// <returns>Пустой массив данных</returns>.
+        /// <response code = "204">Сотрудник успешно частично обновлен</response>.
+        /// <response code="400">Если документ с обновлениями равен null</response>.
+        /// <response code="422">Ошибка валидации модели после применения изменений</response>.
         [HttpPatch("{id}")]
         [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
         public async Task<IActionResult> PartiallyUpdateEmployeeForCompany(Guid companyId, Guid id, [FromBody] JsonPatchDocument<EmployeeForUpdateDto> patchDoc)
         {
             if (patchDoc == null)

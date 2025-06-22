@@ -6,6 +6,7 @@ namespace CompanyEmployees.Controllers
 {
     [Route("api/companies")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v2")]
     public class CompaniesV2Controller : ControllerBase
     {
         private readonly IRepositoryManager _repository;
@@ -13,6 +14,9 @@ namespace CompanyEmployees.Controllers
         {
             _repository = repository;
         }
+        /// <summary>
+        /// Возвращает список всех компаний во 2 версии
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
